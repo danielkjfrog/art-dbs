@@ -1,0 +1,36 @@
+#DB_TYPE=mysql
+#DB_TYPE=mssql
+#DB_TYPE=oracle
+#DB_TYPE=postgresql
+
+version: '2'
+services:
+  artifactory:
+    build:
+      context: ./artifactory
+      dockerfile: Dockerfile-artifactory
+    environment:
+      - ARTIFACTORY_USER=**********
+      - ARTIFACTORY_PASSWORD=**********
+      - ARTIFACTORY_VERSION=**********
+      - ARTIFACTORY_HOME=**********
+      - DB_TYPE=**********
+      - LIC_URL=**********
+    links:
+      - database:mysql
+    depends_on:
+          - database
+    command: "bash /usr/bin/run.sh"
+    expose:
+      - 8081
+    container_name: artifactory_container
+  database:
+    build:
+          context: ./mysql
+          dockerfile: Dockerfile-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - STARTUP_SQL=/tmp/create_db_mysql.sql
+    expose:
+      - 3306
+    container_name: mysql_db_container
