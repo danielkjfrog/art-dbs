@@ -1,36 +1,67 @@
-#DB_TYPE=mysql
-#DB_TYPE=mssql
-#DB_TYPE=oracle
-#DB_TYPE=postgresql
-
 version: '2'
 services:
   artifactory:
     build:
       context: ./artifactory
-      dockerfile: Dockerfile-artifactory
+      dockerfile: Dockerfile
+    ports:
+        - '8081:8081'
     environment:
-      - ARTIFACTORY_USER=**********
-      - ARTIFACTORY_PASSWORD=**********
-      - ARTIFACTORY_VERSION=**********
-      - ARTIFACTORY_HOME=**********
-      - DB_TYPE=**********
-      - LIC_URL=**********
-    links:
-      - database:mysql
-    depends_on:
-          - database
+      - ARTIFACTORY_USER=*********
+      - ARTIFACTORY_PASSWORD=*********
+      - ARTIFACTORY_VERSION=*********
+      - ARTIFACTORY_HOME=/var/opt/jfrog/artifactory
+      #SPECIFY DB HERE
+      - DB_TYPE=*********
+      - LIC_URL=*********
+#    links:
+#      - db
+#    depends_on:
+#      - db
     command: "bash /usr/bin/run.sh"
-    expose:
-      - 8081
-    container_name: artifactory_container
-  database:
-    build:
-          context: ./mysql
-          dockerfile: Dockerfile-mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=password
-      - STARTUP_SQL=/tmp/create_db_mysql.sql
-    expose:
-      - 3306
-    container_name: mysql_db_container
+    container_name: artifactory1_container
+
+#************************************************************************************************
+#********************* MYSQL ********************************************************************
+#************************************************************************************************
+
+#  mysql_db:
+#    build:
+#      context: ./mysql
+#      dockerfile: Dockerfile
+#    environment:
+#      - MYSQL_ROOT_PASSWORD=password
+#      - STARTUP_SQL=/tmp/create_db_mysql.sql
+#    expose:
+#      - 3306
+#    container_name: mysql_db_container
+
+#************************************************************************************************
+#********************* ORACLE *******************************************************************
+#************************************************************************************************
+
+#  oracle_db:
+#    build:
+#      context: ./oracle
+#      dockerfile: Dockerfile
+#    expose:
+#      - 22
+#      - 1521
+#      - 8080
+#    container_name: oracle_db_container
+
+#************************************************************************************************
+#********************* POSTGRES *****************************************************************
+#************************************************************************************************
+
+#  postgresql_db:
+#    build:
+#      context: ./postgresql
+#      dockerfile: Dockerfile
+#    environment:
+#      - POSTGRES_USER=artifactory
+#      - POSTGRES_PASSWORD=password
+#      - POSTGRES_DB=artifactory
+#    expose:
+#      - 5432
+#    container_name: postgresql_db_container
