@@ -1,0 +1,27 @@
+version: '2'
+services:
+  artifactory:
+    build:
+      context: ../artifactory
+      dockerfile: Dockerfile
+    ports:
+        - '8081:8081'
+    env_file:
+      - ../artifactory/common.env
+    environment:
+      - DB_TYPE=oracle
+    links:
+      - oracle
+    depends_on:
+      - oracle
+    command: "bash /usr/bin/run.sh"
+    container_name: artifactory_container
+  oracle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - 22
+      - 1521
+      - 8080
+    container_name: oracle_db_container

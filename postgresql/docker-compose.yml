@@ -1,0 +1,26 @@
+version: '2'
+services:
+  artifactory:
+    build:
+      context: ../artifactory
+      dockerfile: Dockerfile
+    ports:
+        - '8081:8081'
+    env_file:
+      - ../artifactory/common.env
+    environment:
+      - DB_TYPE=postgresql
+    links:
+      - postgresql
+    depends_on:
+      - postgresql
+    command: "bash /usr/bin/run.sh"
+    container_name: artifactory_container
+  postgresql:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=artifactory
+      - POSTGRES_PASS=password
+      - POSTGRES_DATA_DIR=/data
+      - POSTGRES_DB=artifactory
+    container_name: postgresql_db_container
